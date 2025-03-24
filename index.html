@@ -31,6 +31,27 @@
       right: 108px;
     }
     
+    /* Responsive styles */
+    @media (max-width: 768px) {
+      #speaklar-popup {
+        width: 260px;
+      }
+      #speaklar-popup.show {
+        right: 70px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #speaklar-popup {
+        width: 230px;
+        padding: 12px;
+        bottom: 15px;
+      }
+      #speaklar-popup.show {
+        right: 60px;
+      }
+    }
+    
     /* Toggle button */
     #speaklar-toggle {
       position: fixed;
@@ -47,6 +68,24 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+    
+    /* Responsive toggle button */
+    @media (max-width: 768px) {
+      #speaklar-toggle {
+        right: 70px;
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #speaklar-toggle {
+        right: 60px;
+        bottom: 15px;
+        padding: 6px 10px;
+        font-size: 13px;
+      }
     }
     
     /* Headings and text */
@@ -70,6 +109,23 @@
       position: relative;
     }
     
+    /* Responsive avatar */
+    @media (max-width: 768px) {
+      #speaklar-avatar {
+        width: 100px;
+        height: 100px;
+        margin: 20px auto 12px auto;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #speaklar-avatar {
+        width: 90px;
+        height: 90px;
+        margin: 15px auto 10px auto;
+      }
+    }
+    
     /* Form elements */
     #speaklar-popup select, #speaklar-popup input, #speaklar-popup button {
       margin: 8px 0;
@@ -89,6 +145,22 @@
     }
     #speaklar-popup button:hover {
       background: white;
+    }
+    
+    /* Responsive form elements */
+    @media (max-width: 768px) {
+      #speaklar-popup select, #speaklar-popup input, #speaklar-popup button {
+        padding: 8px;
+        font-size: 13px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      #speaklar-popup select, #speaklar-popup input, #speaklar-popup button {
+        padding: 7px;
+        margin: 6px 0;
+        font-size: 12px;
+      }
     }
     #speaklar-form-container {
       border: 1px solid #eaeaea;
@@ -115,6 +187,9 @@
     }
     .speaklar-step {
       display: none;
+    }
+    .speaklar-hiden {
+      display: none !important;
     }
     .speaklar-step.active {
       display: block;
@@ -176,6 +251,25 @@
       overflow: hidden;
       margin-top: 5px;
       bottom: 30px;
+    }
+    
+    /* Responsive language dropdown */
+    @media (max-width: 768px) {
+      .language-dropdown-content {
+        min-width: 110px;
+        bottom: 28px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .language-dropdown-content {
+        min-width: 100px;
+        bottom: 25px;
+      }
+      .language-option {
+        padding: 6px 10px;
+        font-size: 13px;
+      }
     }
     .language-dropdown-content.show {
       display: block;
@@ -288,6 +382,23 @@
       justify-content: center;
       width: 40px;
     }
+    
+    /* Responsive audio visualization */
+    @media (max-width: 768px) {
+      .audio-visualizer {
+        gap: 3px;
+        height: 25px;
+        width: 35px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .audio-visualizer {
+        gap: 2px;
+        height: 20px;
+        width: 30px;
+      }
+    }
     .audio-bar {
       width: 4px;
       height: 15px;
@@ -332,6 +443,13 @@
       width: 170%;
       height: 170%;
       animation-delay: 1s;
+    }
+    
+    /* Responsive audio rings */
+    @media (max-width: 480px) {
+      .audio-ring {
+        border-width: 1.5px;
+      }
     }
     @keyframes pulse {
       0% {
@@ -410,7 +528,7 @@
             session = userAgent.invite(`sip:${target}@103.177.125.134`);
 
             session.on("accepted", () => {
-              console.log("✅ Call connected!");
+              // console.log("✅ Call connected!");
               if (statusElement) statusElement.textContent = "Connected";
               let remoteAudio = document.getElementById(
                 "speaklar-remote-audio"
@@ -422,7 +540,7 @@
                   .getReceivers()
                   .forEach((receiver) => {
                     if (receiver.track.kind === "audio") {
-                      console.log("🔊 Received audio track:", receiver.track);
+                      // console.log("🔊 Received audio track:", receiver.track);
                       remoteStream.addTrack(receiver.track);
                     }
                   });
@@ -465,7 +583,7 @@
             });
 
             session.on("terminated", () => {
-              console.log("📴 Call ended!");
+              // console.log("📴 Call ended!");
               if (statusElement) statusElement.textContent = "Call Ended";
               setTimeout(() => {
                 if (statusElement) statusElement.textContent = "";
@@ -503,7 +621,7 @@
           window.speaklarHangup = function () {
             if (session) {
               session.bye();
-              console.log("📴 Call ended.");
+              // console.log("📴 Call ended.");
               unregister();
               session = null; // Reset session variable after ending call
             }
@@ -512,7 +630,7 @@
 
         function register() {
           const server = "wss://westernaiws.speaklar.com:8089/ws";
-          const sipUser = "50004";
+
           const sipPassword = "ln47UEwtbyNHyzd";
           const sipDomain = "103.101.110.120";
 
@@ -520,7 +638,13 @@
           const selectedLanguage = document.getElementById(
             "speaklar-selected-language"
           ).value;
-          console.log(`Selected language: ${selectedLanguage}`);
+          // console.log(`Selected language: ${selectedLanguage}`);
+
+          if (selectedLanguage == "bd") {
+            const sipUser = "50004";
+          } else {
+            const sipUser = "50006";
+          }
 
           userAgent = new SIP.UA({
             uri: `sip:${sipUser}@${sipDomain}`,
@@ -538,7 +662,7 @@
           });
 
           userAgent.on("registered", () => {
-            console.log("✅ SIP Registered!");
+            // console.log("✅ SIP Registered!");
             window.speaklarCall();
           });
 
@@ -555,7 +679,7 @@
           });
 
           userAgent.on("invite", (incomingSession) => {
-            console.log("📞 Incoming call...");
+            // console.log("📞 Incoming call...");
             session = incomingSession;
             session.accept();
             session.sessionDescriptionHandler.peerConnection
@@ -576,7 +700,7 @@
         function unregister() {
           if (userAgent) {
             userAgent.unregister();
-            console.log("🚪 SIP Unregistered!");
+            // console.log("🚪 SIP Unregistered!");
             userAgent = null;
           }
         }
@@ -976,9 +1100,7 @@
               <img id="current-language-flag" src="https://flagcdn.com/w40/us.png" class="language-flag" alt="Language">
               <div id="language-dropdown-menu" class="language-dropdown-content">
                 <div class="language-option" data-lang="en"><span>🇺🇸</span> English</div>
-                <div class="language-option" data-lang="es"><span>🇪🇸</span> Español</div>
-                <div class="language-option" data-lang="fr"><span>🇫🇷</span> Français</div>
-                <div class="language-option" data-lang="de"><span>🇩🇪</span> Deutsch</div>
+                <div class="language-option" data-lang="bd"><span>BD</span> Bangla</div>
                 </div>
               </div>
                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 5px;">
@@ -1036,9 +1158,7 @@
           function getFlagCodeFromLang(lang) {
             const flagMap = {
               en: "us",
-              es: "es",
-              fr: "fr",
-              de: "de",
+              bd: "bd",
             };
             return flagMap[lang] || "us";
           }
@@ -1051,9 +1171,25 @@
             });
         }
 
+        // function togglePopup() {
+        //   const popup = document.getElementById("speaklar-popup");
+        //   popup.classList.toggle("show");
+        // }
         function togglePopup() {
           const popup = document.getElementById("speaklar-popup");
+          const toggleButton = document.getElementById("speaklar-toggle");
+
+          // Toggle the 'show' class for the popup
           popup.classList.toggle("show");
+
+          // Check if 'show' class is now added or removed
+          if (popup.classList.contains("show")) {
+            // If 'show' class is added, hide the toggle button by adding 'speaklar-hiden' class
+            toggleButton.classList.add("speaklar-hiden");
+          } else {
+            // If 'show' class is removed, remove 'speaklar-hiden' from the toggle button
+            toggleButton.classList.remove("speaklar-hiden");
+          }
         }
       })();
     </script>
