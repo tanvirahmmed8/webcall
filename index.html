@@ -630,7 +630,7 @@
 
         function register() {
           const server = "wss://westernaiws.speaklar.com:8089/ws";
-
+          var sipUser = "50004";
           const sipPassword = "ln47UEwtbyNHyzd";
           const sipDomain = "103.101.110.120";
 
@@ -641,9 +641,9 @@
           // console.log(`Selected language: ${selectedLanguage}`);
 
           if (selectedLanguage == "bd") {
-            const sipUser = "50004";
+             sipUser = "50004";
           } else {
-            const sipUser = "50006";
+             sipUser = "50006";
           }
 
           userAgent = new SIP.UA({
