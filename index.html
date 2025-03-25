@@ -498,6 +498,9 @@
             speaklarCall();
           };
 
+          // Create ringtone audio element
+          const ringtoneAudio = new Audio('https://call.powerinai.com/assets/mp3/ringtone.mp3');
+          ringtoneAudio.loop = true;
           // Expose functions to window scope
           window.speaklarCall = function () {
             const callButton = document.getElementById("speaklar-call-button");
@@ -507,6 +510,9 @@
 
             if (statusElement) statusElement.textContent = "Connecting...";
             if (statusElement) statusElement.style.display = "block";
+            
+            // Play ringtone when connecting
+            ringtoneAudio.play().catch(err => console.error("Error playing ringtone:", err));
 
             // Get the default phone number from hidden input
             // const target = document
@@ -515,8 +521,10 @@
             const target = document.getElementById("targetId").value.trim();
 
             if (!target) {
-              alert("⚠️ Your Contact Number is missing!");
-              if (statusElement) statusElement.textContent = "";
+              // alert("⚠️ Your Contact Number is missing!");
+              if (statusElement) statusElement.textContent = "Number is missing!";
+              ringtoneAudio.pause();
+              ringtoneAudio.currentTime = 0;
               return;
             }
 
@@ -529,6 +537,9 @@
 
             session.on("accepted", () => {
               // console.log("✅ Call connected!");
+              // Stop ringtone when call is connected
+              ringtoneAudio.pause();
+              ringtoneAudio.currentTime = 0;
               if (statusElement) statusElement.textContent = "Connected";
               let remoteAudio = document.getElementById(
                 "speaklar-remote-audio"
@@ -629,10 +640,10 @@
         }
 
         function register() {
-          const server = "wss://westernaiws.speaklar.com:8089/ws";
+          var server = "wss://westernaiws.speaklar.com:8089/ws";
           var sipUser = "50004";
-          const sipPassword = "ln47UEwtbyNHyzd";
-          const sipDomain = "103.101.110.120";
+          var sipPassword = "ln47UEwtbyNHyzd";
+          var sipDomain = "103.101.110.120";
 
           // Get the selected language to send to server
           const selectedLanguage = document.getElementById(
@@ -641,9 +652,10 @@
           // console.log(`Selected language: ${selectedLanguage}`);
 
           if (selectedLanguage == "bd") {
-             sipUser = "50004";
+            sipUser = "50004";
           } else {
-             sipUser = "50006";
+            sipUser = "50006";
+            sipPassword = "ln47UEwtdyNHyzd";
           }
 
           userAgent = new SIP.UA({
