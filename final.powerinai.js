@@ -861,6 +861,10 @@
       `.${WIDGET_NAMESPACE}-audio-ring`
     );
 
+    const micToggleBtn = document.getElementById(
+      `${WIDGET_NAMESPACE}-mic-toggle`
+    );
+
     if (targetId) targetId.value = "";
 
     if (statusElement) statusElement.textContent = "";
@@ -1002,6 +1006,35 @@
   }
 
   // State object is already defined above, removing duplicate initialization
+  // Function to unlock audio on iOS devices
+  function unlockAudioForIOS(audioElement) {
+    if (!audioElement) return;
+
+    // Create a temporary audio context
+    const tempContext = new (window.AudioContext ||
+      window.webkitAudioContext)();
+
+    // Play a silent sound to unlock the audio
+    const silentSource = tempContext.createBufferSource();
+    silentSource.buffer = tempContext.createBuffer(1, 1, 22050);
+    silentSource.connect(tempContext.destination);
+    silentSource.start(0);
+
+    // Also try to play the audio element itself
+    const playPromise = audioElement.play();
+
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          // Audio playback started successfully
+          audioElement.pause();
+        })
+        .catch((error) => {
+          // Auto-play was prevented, but we've still "unlocked" the audio
+          console.log("Audio unlock attempt: ", error);
+        });
+    }
+  }
 
   // Add volume control function
   window.adjustVolume = function (value) {
@@ -1023,10 +1056,30 @@
       `${WIDGET_NAMESPACE}-remote-audio`
     );
     if (remoteAudio) {
-      remoteAudio.volume = volume;
+      // Special handling for iOS devices
+      if (isIOS()) {
+        // On iOS, we need to unlock audio first
+        unlockAudioForIOS(remoteAudio);
+        // Set volume with a slight delay to ensure it takes effect
+        setTimeout(() => {
+          remoteAudio.volume = volume;
+        }, 100);
+      } else {
+        remoteAudio.volume = volume;
+      }
     }
     if (ringtoneAudio) {
-      ringtoneAudio.volume = volume;
+      // Special handling for iOS devices
+      if (isIOS()) {
+        // On iOS, we need to unlock audio first
+        unlockAudioForIOS(ringtoneAudio);
+        // Set volume with a slight delay to ensure it takes effect
+        setTimeout(() => {
+          ringtoneAudio.volume = volume;
+        }, 100);
+      } else {
+        ringtoneAudio.volume = volume;
+      }
     }
     // Save volume setting to localStorage for persistence
     try {
